@@ -1,0 +1,1 @@
+print("Smart Society Apartment Management Platform")
