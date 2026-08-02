@@ -1,0 +1,10 @@
+def register():
+    name = input("Enter your name: ")
+    flat_no = input("Enter flat number: ")
+    phone = input("Enter phone number: ")
+    password = input("Create password: ")
+    print()
+    print("Registration Successful")
+    print("Name :", name)
+    print("Flat No :", flat_no)
+    print("Phone :", phone)
