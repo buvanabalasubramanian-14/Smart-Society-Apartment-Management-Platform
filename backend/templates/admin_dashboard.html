@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard | Smart Society</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-page">
+
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-logo">
+                🛡️
+            </div>
+
+            <div>
+                <h2>Smart Society</h2>
+                <p>Admin Panel</p>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+            <a href="/admin/dashboard"
+               class="menu-item active">
+                🏠 Dashboard
+            </a>
+
+            <a href="/admin/complaints"
+               class="menu-item">
+                📝 Complaints
+            </a>
+
+            <a href="/admin/residents"
+               class="menu-item">
+                👥 Residents
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="/admin/logout"
+               class="logout-btn">
+                ↪ Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <main class="dashboard-main">
+
+        <header class="topbar">
+
+            <div>
+
+                <span>ADMIN PANEL</span>
+
+                <h1>
+                    Welcome, Admin 👋
+                </h1>
+
+            </div>
+
+            <div class="user-badge">
+                🛡️
+            </div>
+
+        </header>
+
+
+        <section class="welcome-card">
+
+            <div>
+
+                <small>SMART SOCIETY</small>
+
+                <h2>
+                    Society management made simple.
+                </h2>
+
+                <p>
+                    Manage residents and monitor society
+                    complaints from one place.
+                </p>
+
+            </div>
+
+            <div class="welcome-icon">
+                🏢
+            </div>
+
+        </section>
+
+
+        <section>
+
+            <div class="section-heading">
+
+                <small>ADMIN SERVICES</small>
+
+                <h2>
+                    Management Overview
+                </h2>
+
+            </div>
+
+
+            <div class="module-grid">
+
+                <a href="/admin/complaints"
+                   class="module-card">
+
+                    <div class="module-icon">
+                        📝
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Complaints
+                        </h3>
+
+                        <p>
+                            View and manage resident complaints.
+                        </p>
+
+                    </div>
+
+                    <b>→</b>
+
+                </a>
+
+
+                <a href="/admin/residents"
+                   class="module-card">
+
+                    <div class="module-icon">
+                        👥
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Residents
+                        </h3>
+
+                        <p>
+                            View registered society residents.
+                        </p>
+
+                    </div>
+
+                    <b>→</b>
+
+                </a>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

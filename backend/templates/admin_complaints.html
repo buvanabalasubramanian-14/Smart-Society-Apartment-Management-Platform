@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Complaints | Smart Society</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<div class="dashboard-page">
+
+    <main class="dashboard-main">
+
+        <header class="topbar">
+
+            <div>
+
+                <span>ADMIN PANEL</span>
+
+                <h1>Complaints 📝</h1>
+
+            </div>
+
+            <div class="user-badge">
+                🛡️
+            </div>
+
+        </header>
+
+
+        <section class="welcome-card">
+
+            <div>
+
+                <small>COMPLAINT MANAGEMENT</small>
+
+                <h2>Resident Complaints</h2>
+
+                <p>
+                    View complaints submitted by residents.
+                </p>
+
+            </div>
+
+            <div class="welcome-icon">
+                📝
+            </div>
+
+        </section>
+
+
+        <section>
+
+            <div class="section-heading">
+
+                <small>ALL COMPLAINTS</small>
+
+                <h2>Complaint List</h2>
+
+            </div>
+
+
+            {% if complaints %}
+
+                <div class="module-grid">
+
+                    {% for complaint in complaints %}
+
+                        <div class="module-card">
+
+                            <div class="module-icon">
+                                📝
+                            </div>
+
+                            <div>
+
+                                <h3>
+                                    {{ complaint.title }}
+                                </h3>
+
+                                <p>
+                                    {{ complaint.description }}
+                                </p>
+
+                                <p>
+                                    <strong>
+                                        Complaint ID:
+                                    </strong>
+
+                                    {{ complaint.id }}
+                                </p>
+
+                                <p>
+                                    <strong>
+                                        Resident ID:
+                                    </strong>
+
+                                    {{ complaint.resident_id }}
+                                </p>
+
+                                <p>
+                                    <strong>
+                                        Status:
+                                    </strong>
+
+                                    {{ complaint.status }}
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="welcome-card">
+
+                    <div>
+
+                        <h2>
+                            No Complaints Yet
+                        </h2>
+
+                        <p>
+                            Residents have not submitted
+                            any complaints.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+
+        <br>
+
+        <a href="/admin/dashboard">
+            ← Back to Admin Dashboard
+        </a>
+
+    </main>
+
+</div>
+
+</body>
+
+</html>

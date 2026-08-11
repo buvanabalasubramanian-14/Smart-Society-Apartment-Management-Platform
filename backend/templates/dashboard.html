@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dashboard | Smart Society</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="dashboard-page">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="sidebar-brand">
+
+            <div class="sidebar-logo">
+                🏢
+            </div>
+
+            <div>
+                <h2>Smart Society</h2>
+                <p>Apartment Management</p>
+            </div>
+
+        </div>
+
+
+        <nav class="sidebar-menu">
+
+            <a href="/dashboard" class="menu-item active">
+                🏠 Dashboard
+            </a>
+
+            <a href="/complaints" class="menu-item">
+                📝 Complaints
+            </a>
+
+            <a href="#" class="menu-item">
+                👥 Visitors
+            </a>
+
+            <a href="#" class="menu-item">
+                💳 Maintenance
+            </a>
+
+            <a href="#" class="menu-item">
+                👤 Profile
+            </a>
+
+        </nav>
+
+
+        <div class="sidebar-bottom">
+
+            <a href="/logout" class="logout-btn">
+                ↪ Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="dashboard-main">
+
+
+        <!-- TOP BAR -->
+        <header class="topbar">
+
+            <div>
+
+                <p class="topbar-label">
+                    RESIDENT PORTAL
+                </p>
+
+                <h1>
+                    Welcome, {{ session["resident_name"] }} 👋
+                </h1>
+
+            </div>
+
+
+            <div class="user-badge">
+
+                {{ session["resident_name"][0] }}
+
+            </div>
+
+        </header>
+
+
+
+        <!-- WELCOME CARD -->
+        <section class="welcome-card">
+
+            <div>
+
+                <p class="welcome-label">
+                    SMART SOCIETY
+                </p>
+
+                <h2>
+                    Your apartment, managed smarter.
+                </h2>
+
+                <p>
+                    Access complaints, visitors, maintenance
+                    and your resident profile from one place.
+                </p>
+
+                <a href="/complaints" class="primary-btn">
+                    Report an Issue →
+                </a>
+
+            </div>
+
+
+            <div class="welcome-icon">
+                🏢
+            </div>
+
+        </section>
+
+
+
+        <!-- SOCIETY SERVICES -->
+        <section>
+
+            <div class="section-heading">
+
+                <p class="topbar-label">
+                    OVERVIEW
+                </p>
+
+                <h2>
+                    Society Services
+                </h2>
+
+            </div>
+
+
+            <div class="module-grid">
+
+
+                <!-- COMPLAINTS -->
+                <a href="/complaints"
+                   class="module-card">
+
+                    <div class="module-icon">
+                        📝
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Complaints
+                        </h3>
+
+                        <p>
+                            Report and track apartment issues.
+                        </p>
+
+                    </div>
+
+                    <b>
+                        →
+                    </b>
+
+                </a>
+
+
+
+                <!-- VISITORS -->
+                <a href="#"
+                   class="module-card">
+
+                    <div class="module-icon">
+                        👥
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Visitors
+                        </h3>
+
+                        <p>
+                            Manage visitor information.
+                        </p>
+
+                    </div>
+
+                    <b>
+                        →
+                    </b>
+
+                </a>
+
+
+
+                <!-- MAINTENANCE -->
+                <a href="#"
+                   class="module-card">
+
+                    <div class="module-icon">
+                        💳
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Maintenance
+                        </h3>
+
+                        <p>
+                            View maintenance details.
+                        </p>
+
+                    </div>
+
+                    <b>
+                        →
+                    </b>
+
+                </a>
+
+
+
+                <!-- PROFILE -->
+                <a href="#"
+                   class="module-card">
+
+                    <div class="module-icon">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Profile
+                        </h3>
+
+                        <p>
+                            View resident information.
+                        </p>
+
+                    </div>
+
+                    <b>
+                        →
+                    </b>
+
+                </a>
+
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+</div>
+
+</body>
+
+</html>
