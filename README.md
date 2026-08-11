@@ -1,59 +1,127 @@
 Smart Society Apartment Management Platform
 
-Project Description
-      Smart Society Apartment Management Platform is a console-based Python application that helps manage apartment-related activities. The project provides a simple menu-driven system where users can log in, register, and access different management features.
+A web-based apartment management platform that helps residents and administrators manage society services efficiently.
 
 Features
-  - User Login
-  - User Registration
-  - Menu Driven Interface
-  - Input Validation
-  - Easy to Use Console Application
 
- Technologies Used
-  - Python 3
-  - Visual Studio Code
-  - Git
-  - GitHub
+Resident Module
+- Resident Registration
+- Secure Resident Login
+- Resident Dashboard
+- Complaint Registration
+- Complaint Status Tracking
+- Resident Profile
 
- Project Structure
+Admin Module
+- Admin Login
+- Admin Dashboard
+- View Resident Complaints
+- Manage Complaint Status
 
+User Roles
 
-Smart Society Apartment Management Platform/
+- **Resident** – Register, login, submit complaints and track complaints.
+- **Admin** – Login, view complaints and manage complaint status.
+
+Technology Stack
+
+- Frontend: HTML, CSS
+- Backend: Python Flask
+- Database: SQLite
+- ORM: Flask-SQLAlchemy
+- Authentication: Session-based Login
+- Password Security: Werkzeug Password Hashing
+
+Project Structure
+
+text
+Smart-Society-Apartment-Management-Platform/
 │
 ├── backend/
-│   ├── main.py
-│   ├── login.py
-│   └── register.py
+│   ├── app.py
+│   ├── static/
+│   │   └── style.css
+│   ├── templates/
+│   │   ├── home.html
+│   │   ├── login.html
+│   │   ├── register.html
+│   │   ├── dashboard.html
+│   │   ├── complaints.html
+│   │   ├── admin_login.html
+│   │   ├── admin_dashboard.html
+│   │   └── admin_complaints.html
+│   └── instance/
 │
-├── tests/
-│   └── manual_test.md
-│
-├── README.md
-└── LICENSE
+├── docs/
+├── .gitignore
+└── README.md
+
+How to Run
+
+1. Create virtual environment
+python -m venv venv
+
+2. Activate environment
+Windows:
+venv\Scripts\activate
+
+3. Install dependencies
+pip install flask flask-sqlalchemy werkzeug
+
+4. Run the application
+cd backend
+python app.py
+
+5. Open in browser
+http://127.0.0.1:5000
+
+System Flow
+
+Home
+  ↓
+Resident / Admin Login
+  ↓
+Authentication
+  ↓
+Dashboard
+  ↓
+Society Services
+  ↓
+Complaint Management
+  ↓
+Database
 
 
- How to Run
-   1. Open the project in VS Code.
-   2. Open the terminal.
-   3. Move to the backend folder.
-        cd backend
-   4. Run the project.
-        python main.py
+Database
+
+       The application uses SQLite for storing resident and complaint information.
+Database files are excluded from GitHub using .gitignore.
 
 
- Current Modules
-  - Login Module
-  - Registration Module
+Security
+
+       Password hashing
+       Session-based authentication
+       Role-based access
+       Input validation
+       Protected dashboard routes
+
 
 Future Enhancements
-  - Resident Management
-  - Visitor Management
-  - Complaint Management
-  - Maintenance Payment
-  - Notice Board
-  - Event Management
-  - Parking Management
+
+       Visitor Management
+       Maintenance Payment Management
+       Notifications
+       Admin Resident Management
+       Complaint Priority Management
+       Reports and Analytics
+
+
+Project Type
+
+        Full-Stack Web Application | Multi-User Apartment Management System
+
 
 Author
-BUVANA B
+
+Buvana Balasubramanian
