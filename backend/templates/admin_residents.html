@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Residents | Smart Society</title>
+<link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+</head>
+<body>
+
+<div class="dashboard-page">
+<main class="dashboard-main">
+
+<p class="topbar-label">SOCIETY ADMINISTRATION</p>
+<h1>Registered Residents</h1>
+<p>View and manage residents.</p>
+
+{% for r in residents %}
+<div class="module-card">
+<h2>👤 {{ r.name }}</h2>
+<p>Flat: {{ r.flat_no }}</p>
+<p>Phone: {{ r.phone }}</p>
+<p>Email: {{ r.email }}</p>
+
+<form method="POST" action="/admin/resident/delete/{{ r.id }}">
+<button class="create-btn">Delete Resident</button>
+</form>
+</div>
+
+{% else %}
+<div class="module-card">
+<h2>No Residents</h2>
+<p>No residents registered yet.</p>
+</div>
+{% endfor %}
+
+<a href="/admin/dashboard" class="create-btn">← Back</a>
+
+</main>
+</div>
+</body>
+</html>

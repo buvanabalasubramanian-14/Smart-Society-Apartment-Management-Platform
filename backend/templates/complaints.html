@@ -1,391 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Complaints | Smart Society</title>
-
-    <link rel="stylesheet"
-          href="{{ url_for('static', filename='style.css') }}">
-
-    <style>
-        /* Complaint page */
-
-        .complaint-page {
-            width: 100%;
-            max-width: 1050px;
-            margin: 0 auto;
-        }
-
-        .complaint-header {
-            margin-bottom: 25px;
-        }
-
-        .complaint-header h1 {
-            font-size: 28px;
-            color: #172033;
-            margin: 6px 0;
-        }
-
-        .complaint-header p {
-            color: #64748b;
-            font-size: 14px;
-        }
-
-        .complaint-layout {
-            display: grid;
-            grid-template-columns: 1fr 1.2fr;
-            gap: 22px;
-        }
-
-        .complaint-box {
-            background: #ffffff;
-            border: 1px solid #e5eaf1;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 8px 25px rgba(15,23,42,0.04);
-        }
-
-        .complaint-box h2 {
-            font-size: 18px;
-            color: #172033;
-            margin-bottom: 7px;
-        }
-
-        .box-description {
-            color: #64748b;
-            font-size: 13px;
-            margin-bottom: 22px;
-            line-height: 1.5;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            font-weight: 600;
-            color: #334155;
-            margin-bottom: 7px;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            border: 1px solid #d9e0ea;
-            border-radius: 8px;
-            padding: 12px;
-            font-family: Arial, sans-serif;
-            font-size: 14px;
-            background: #f8fafc;
-            outline: none;
-        }
-
-        .form-group input {
-            height: 45px;
-        }
-
-        .form-group textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            background: white;
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
-        }
-
-        .submit-complaint {
-            width: 100%;
-            height: 45px;
-            border: none;
-            border-radius: 8px;
-            background: #2563eb;
-            color: white;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .submit-complaint:hover {
-            background: #1d4ed8;
-        }
-
-        .complaint-item {
-            padding: 18px;
-            border: 1px solid #e5eaf1;
-            border-radius: 12px;
-            margin-bottom: 12px;
-            background: #fafcff;
-        }
-
-        .complaint-item-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-        }
-
-        .complaint-item h3 {
-            font-size: 15px;
-            color: #172033;
-        }
-
-        .status {
-            padding: 5px 10px;
-            border-radius: 20px;
-            background: #fff7ed;
-            color: #c2410c;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .complaint-item p {
-            color: #64748b;
-            font-size: 13px;
-            line-height: 1.5;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 35px 15px;
-            color: #94a3b8;
-            font-size: 13px;
-        }
-
-        @media (max-width: 800px) {
-            .complaint-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Complaints | Smart Society</title>
+<link rel="stylesheet" href="{{ url_for('static',filename='style.css') }}">
+<style>
+.complaint-page{max-width:1050px;width:100%;margin:auto}.complaint-header{margin-bottom:25px}
+.complaint-header h1{font-size:28px;color:#172033;margin:6px 0}.complaint-header p{color:#64748b;font-size:14px}
+.complaint-layout{display:grid;grid-template-columns:1fr 1.2fr;gap:22px}.complaint-box{background:#fff;border:1px solid #e5eaf1;border-radius:16px;padding:25px;box-shadow:0 8px 25px #0f172a0a}
+.complaint-box h2{font-size:18px;color:#172033;margin:0 0 7px}.box-description{color:#64748b;font-size:13px;margin-bottom:22px}
+.form-group{margin-bottom:18px}.form-group label{display:block;font-size:13px;font-weight:600;color:#334155;margin-bottom:7px}
+.form-group input,.form-group textarea{width:100%;box-sizing:border-box;border:1px solid #d9e0ea;border-radius:8px;padding:12px;font-size:14px;background:#f8fafc;outline:0}
+.form-group input{height:45px}.form-group textarea{min-height:120px;resize:vertical}
+.submit-complaint{width:100%;height:45px;border:0;border-radius:8px;background:#2563eb;color:white;font-weight:600;cursor:pointer}
+.complaint-item{padding:18px;border:1px solid #e5eaf1;border-radius:12px;margin-bottom:12px;background:#fafcff}
+.complaint-item-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.complaint-item h3{font-size:15px;color:#172033}
+.status{padding:5px 10px;border-radius:20px;background:#fff7ed;color:#c2410c;font-size:11px;font-weight:600}
+.complaint-item p{color:#64748b;font-size:13px;line-height:1.5}.empty-state{text-align:center;padding:35px;color:#94a3b8}
+@media(max-width:800px){.complaint-layout{grid-template-columns:1fr}}
+</style>
 </head>
-
-
 <body>
-
 <div class="dashboard-page">
-
-    <!-- SIDEBAR -->
-
-    <aside class="sidebar">
-
-        <div class="sidebar-brand">
-
-            <div class="sidebar-logo">
-                🏢
-            </div>
-
-            <div>
-                <h2>Smart Society</h2>
-                <p>Apartment Management</p>
-            </div>
-
-        </div>
-
-
-        <nav class="sidebar-menu">
-
-            <a href="/dashboard" class="menu-item">
-                🏠
-                <span>Dashboard</span>
-            </a>
-
-            <a href="/complaints" class="menu-item active">
-                📝
-                <span>Complaints</span>
-            </a>
-
-            <a href="#" class="menu-item">
-                👥
-                <span>Visitors</span>
-            </a>
-
-            <a href="#" class="menu-item">
-                💳
-                <span>Maintenance</span>
-            </a>
-
-            <a href="#" class="menu-item">
-                👤
-                <span>Profile</span>
-            </a>
-
-        </nav>
-
-
-        <div class="sidebar-bottom">
-
-            <a href="/logout" class="logout-btn">
-                ↪ Logout
-            </a>
-
-        </div>
-
-    </aside>
-
-
-    <!-- MAIN CONTENT -->
-
-    <main class="dashboard-main">
-
-        <div class="complaint-page">
-
-            <!-- HEADER -->
-
-            <div class="complaint-header">
-
-                <p class="topbar-label">
-                    SOCIETY SERVICES
-                </p>
-
-                <h1>
-                    Complaint Management
-                </h1>
-
-                <p>
-                    Report apartment issues and track your complaints.
-                </p>
-
-            </div>
-
-
-            <!-- COMPLAINT CONTENT -->
-
-            <div class="complaint-layout">
-
-                <!-- REPORT COMPLAINT -->
-
-                <div class="complaint-box">
-
-                    <h2>
-                        Report an Issue
-                    </h2>
-
-                    <p class="box-description">
-                        Provide the details of the issue you want
-                        to report to the society management.
-                    </p>
-
-
-                    <form method="POST"
-                          action="/complaints">
-
-                        <div class="form-group">
-
-                            <label for="title">
-                                Complaint Title
-                            </label>
-
-                            <input
-                                type="text"
-                                id="title"
-                                name="title"
-                                placeholder="Example: Water leakage"
-                                maxlength="150"
-                                required>
-
-                        </div>
-
-
-                        <div class="form-group">
-
-                            <label for="description">
-                                Description
-                            </label>
-
-                            <textarea
-                                id="description"
-                                name="description"
-                                placeholder="Describe the issue clearly..."
-                                required></textarea>
-
-                        </div>
-
-
-                        <button
-                            type="submit"
-                            class="submit-complaint">
-
-                            Submit Complaint
-
-                        </button>
-
-                    </form>
-
-                </div>
-
-
-                <!-- MY COMPLAINTS -->
-
-                <div class="complaint-box">
-
-                    <h2>
-                        My Complaints
-                    </h2>
-
-                    <p class="box-description">
-                        View the complaints submitted by you.
-                    </p>
-
-
-                    {% if complaints %}
-
-                        {% for complaint in complaints %}
-
-                            <div class="complaint-item">
-
-                                <div class="complaint-item-top">
-
-                                    <h3>
-                                        {{ complaint.title }}
-                                    </h3>
-
-                                    <span class="status">
-                                        {{ complaint.status }}
-                                    </span>
-
-                                </div>
-
-                                <p>
-                                    {{ complaint.description }}
-                                </p>
-
-                            </div>
-
-                        {% endfor %}
-
-                    {% else %}
-
-                        <div class="empty-state">
-
-                            <div style="font-size:30px; margin-bottom:10px;">
-                                📝
-                            </div>
-
-                            No complaints submitted yet.
-
-                        </div>
-
-                    {% endif %}
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </main>
-
-</div>
-
+<aside class="sidebar">
+<div class="sidebar-brand"><div class="sidebar-logo">🏢</div><div><h2>Smart Society</h2><p>Apartment Management</p></div></div>
+<nav class="sidebar-menu">
+<a href="/dashboard" class="menu-item">🏠 <span>Dashboard</span></a>
+<a href="/complaints" class="menu-item active">📝 <span>Complaints</span></a>
+<a href="#" class="menu-item">👥 <span>Visitors</span></a><a href="#" class="menu-item">💳 <span>Maintenance</span></a><a href="#" class="menu-item">👤 <span>Profile</span></a>
+</nav><div class="sidebar-bottom"><a href="/logout" class="logout-btn">↪ Logout</a></div>
+</aside>
+<main class="dashboard-main">
+<div class="complaint-page">
+<div class="complaint-header"><p class="topbar-label">SOCIETY SERVICES</p><h1>Complaint Management</h1><p>Report apartment issues and track your complaints.</p></div>
+<div class="complaint-layout">
+<div class="complaint-box"><h2>Report an Issue</h2><p class="box-description">Provide the details of the issue you want to report to the society management.</p>
+<form method="POST" action="/complaints">
+<div class="form-group"><label>Complaint Title</label><input type="text" name="title" placeholder="Example: Water leakage" maxlength="150" required></div>
+<div class="form-group"><label>Description</label><textarea name="description" placeholder="Describe the issue clearly..." required></textarea></div>
+<button class="submit-complaint" type="submit">Submit Complaint</button>
+</form></div>
+<div class="complaint-box"><h2>My Complaints</h2><p class="box-description">View the complaints submitted by you.</p>
+{% if complaints %}{% for complaint in complaints %}
+<div class="complaint-item"><div class="complaint-item-top"><h3>{{ complaint.title }}</h3><span class="status">{{ complaint.status }}</span></div><p>{{ complaint.description }}</p></div>
+{% endfor %}{% else %}<div class="empty-state">📝<br>No complaints submitted yet.</div>{% endif %}
+</div></div></div>
+</main></div>
 </body>
-
 </html>
