@@ -10,11 +10,16 @@ app.secret_key = "smart"
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
-    BASE_DIR,
-    "instance",
-    "smart_society.db"
-)
+DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL:
+    app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
+else:
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
+        BASE_DIR,
+        "instance",
+        "smart_society.db"
+    )
 
 db = SQLAlchemy(app)
 

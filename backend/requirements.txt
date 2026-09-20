@@ -4,3 +4,4 @@ Werkzeug
 pytest
 flake8
 gunicorn
+psycopg2-binary
