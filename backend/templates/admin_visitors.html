@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <title>Visitor Management | Admin</title>
+
+    <style>
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .header,
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .card {
+            margin-top: 25px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .subtitle {
+            color: #666;
+        }
+
+        .visitor {
+            background: #f5f7fb;
+            padding: 18px;
+            margin-top: 15px;
+            border-radius: 10px;
+        }
+
+        .visitor p {
+            margin: 7px 0;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 11px 20px;
+            background: #222;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .empty {
+            color: #666;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+
+    <div class="header">
+
+        <h1>
+            Visitor Management
+        </h1>
+
+        <p class="subtitle">
+            View and manage visitor records registered by residents.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>
+            Visitor Records
+        </h2>
+
+
+        {% if visitors %}
+
+            {% for visitor in visitors %}
+
+            <div class="visitor">
+
+                <h3>
+                    {{ visitor.visitor_name }}
+                </h3>
+
+                <p>
+                    <strong>Phone:</strong>
+                    {{ visitor.phone }}
+                </p>
+
+                <p>
+                    <strong>Visit Date:</strong>
+                    {{ visitor.visit_date }}
+                </p>
+
+                <p>
+                    <strong>Purpose:</strong>
+                    {{ visitor.purpose }}
+                </p>
+
+                <p>
+                    <strong>Resident ID:</strong>
+                    {{ visitor.resident_id }}
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p class="empty">
+                No visitor records available.
+            </p>
+
+        {% endif %}
+
+
+    </div>
+
+
+    <a class="back" href="/admin/dashboard">
+        ← Back to Dashboard
+    </a>
+
+
+</div>
+
+</body>
+</html>

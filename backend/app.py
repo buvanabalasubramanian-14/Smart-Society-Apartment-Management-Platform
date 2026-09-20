@@ -1,11 +1,20 @@
 from flask import Flask, request, redirect, session, render_template
+import os
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "smart"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///smart_society.db"
+# ================= DATABASE PATH =================
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
+    BASE_DIR,
+    "instance",
+    "smart_society.db"
+)
 
 db = SQLAlchemy(app)
 
@@ -421,6 +430,22 @@ def delete_resident(id):
     return redirect("/admin/residents")
 
 
+# ================= ADMIN VISITORS =================
+
+@app.route("/admin/visitors")
+def admin_visitors():
+
+    if session.get("type") != "admin":
+        return redirect("/admin/login")
+
+    visitors = Visitor.query.all()
+
+    return render_template(
+        "admin_visitors.html",
+        visitors=visitors
+    )
+
+
 # ================= ADMIN MAINTENANCE =================
 
 @app.route("/admin/maintenance")
@@ -482,6 +507,11 @@ def logout():
 # ================= DATABASE SETUP =================
 
 with app.app_context():
+
+    os.makedirs(
+        os.path.join(BASE_DIR, "instance"),
+        exist_ok=True
+    )
 
     db.create_all()
 
