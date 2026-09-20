@@ -12,15 +12,19 @@
 
         .container {
             max-width: 900px;
-            margin: 50px auto;
+            margin: 40px auto;
             padding: 20px;
         }
 
-        .header {
+        .header, .card {
             background: white;
             padding: 25px;
             border-radius: 16px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .card {
+            margin-top: 25px;
         }
 
         h1 {
@@ -31,19 +35,41 @@
             color: #666;
         }
 
-        .card {
-            background: white;
-            margin-top: 25px;
-            padding: 25px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        input, textarea {
+            width: 100%;
+            padding: 11px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 8px;
         }
 
-        .service {
+        textarea {
+            height: 90px;
+        }
+
+        button {
+            width: 100%;
+            padding: 11px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .request {
             padding: 15px;
-            margin-top: 12px;
+            margin-top: 15px;
             background: #f5f7fb;
             border-radius: 10px;
+        }
+
+        .delete {
+            width: auto;
+            background: #dc2626;
+            margin-top: 8px;
+            padding: 8px 15px;
         }
 
         .back {
@@ -65,30 +91,79 @@
     <div class="header">
         <h1>Maintenance Management</h1>
         <p class="subtitle">
-            Manage apartment maintenance services.
+            Submit and track apartment maintenance requests.
         </p>
     </div>
 
+
     <div class="card">
 
-        <h2>Maintenance Services</h2>
+        <h2>New Maintenance Request</h2>
 
-        <div class="service">
-            <strong>Maintenance Information</strong>
-            <p>View and manage apartment maintenance details.</p>
-        </div>
+        <form method="POST" action="/maintenance">
 
-        <div class="service">
-            <strong>Maintenance Requests</strong>
-            <p>Maintenance requests can be submitted and tracked here.</p>
-        </div>
+            <input
+                type="text"
+                name="title"
+                placeholder="Issue Title"
+                required
+            >
 
-        <div class="service">
-            <strong>Payment Information</strong>
-            <p>Maintenance payment details can be managed here.</p>
-        </div>
+            <textarea
+                name="description"
+                placeholder="Describe the maintenance issue"
+                required
+            ></textarea>
+
+            <button type="submit">
+                Submit Request
+            </button>
+
+        </form>
 
     </div>
+
+
+    <div class="card">
+
+        <h2>My Maintenance Requests</h2>
+
+        {% if requests %}
+
+            {% for item in requests %}
+
+            <div class="request">
+
+                <strong>{{ item.title }}</strong>
+
+                <p>{{ item.description }}</p>
+
+                <p>
+                    Status:
+                    <strong>{{ item.status }}</strong>
+                </p>
+
+                <form
+                    method="POST"
+                    action="/maintenance/delete/{{ item.id }}"
+                >
+                    <button class="delete" type="submit">
+                        Delete
+                    </button>
+                </form>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No maintenance requests yet.</p>
+
+        {% endif %}
+
+    </div>
+
 
     <a class="back" href="/dashboard">
         ← Back to Dashboard

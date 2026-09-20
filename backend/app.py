@@ -4,7 +4,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = "smart"
+
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///smart_society.db"
+
 db = SQLAlchemy(app)
 
 
@@ -33,7 +35,24 @@ class Complaint(db.Model):
     status = db.Column(db.String(30), default="Pending")
 
 
-# ================= HEALTH CHECK =================
+class Visitor(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    resident_id = db.Column(db.Integer)
+    visitor_name = db.Column(db.String(100))
+    phone = db.Column(db.String(20))
+    visit_date = db.Column(db.String(20))
+    purpose = db.Column(db.String(150))
+
+
+class Maintenance(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    resident_id = db.Column(db.Integer)
+    title = db.Column(db.String(150))
+    description = db.Column(db.Text)
+    status = db.Column(db.String(30), default="Pending")
+
+
+# ================= HEALTH =================
 
 @app.route("/health")
 def health():
@@ -50,25 +69,29 @@ def home():
     return render_template("home.html")
 
 
-# ================= RESIDENT REGISTER =================
+# ================= REGISTER =================
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+
     if request.method == "POST":
+
         email = request.form["email"].lower()
 
         if Resident.query.filter_by(email=email).first():
             return "Email already registered. Please login."
 
-        r = Resident(
+        resident = Resident(
             name=request.form["name"],
             flat_no=request.form["flat_no"],
             phone=request.form["phone"],
             email=email,
-            password=generate_password_hash(request.form["password"])
+            password=generate_password_hash(
+                request.form["password"]
+            )
         )
 
-        db.session.add(r)
+        db.session.add(resident)
         db.session.commit()
 
         return redirect("/login")
@@ -80,19 +103,23 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+
     if request.method == "POST":
-        r = Resident.query.filter_by(
+
+        resident = Resident.query.filter_by(
             email=request.form["email"].lower()
         ).first()
 
-        if r and check_password_hash(
-            r.password,
+        if resident and check_password_hash(
+            resident.password,
             request.form["password"]
         ):
+
             session.clear()
+
             session["type"] = "resident"
-            session["id"] = r.id
-            session["resident_name"] = r.name
+            session["id"] = resident.id
+            session["resident_name"] = resident.name
 
             return redirect("/dashboard")
 
@@ -103,20 +130,23 @@ def login():
 
 @app.route("/dashboard")
 def dashboard():
+
     if session.get("type") != "resident":
         return redirect("/login")
 
     return render_template("dashboard.html")
 
 
-# ================= RESIDENT COMPLAINTS =================
+# ================= COMPLAINTS =================
 
 @app.route("/complaints", methods=["GET", "POST"])
 def complaints():
+
     if session.get("type") != "resident":
         return redirect("/login")
 
     if request.method == "POST":
+
         complaint = Complaint(
             resident_id=session["id"],
             title=request.form["title"],
@@ -136,30 +166,110 @@ def complaints():
     )
 
 
-# ================= RESIDENT VISITORS =================
+# ================= VISITORS =================
 
-@app.route("/visitors")
+@app.route("/visitors", methods=["GET", "POST"])
 def visitors():
+
     if session.get("type") != "resident":
         return redirect("/login")
 
-    return render_template("visitors.html")
+    if request.method == "POST":
+
+        visitor = Visitor(
+            resident_id=session["id"],
+            visitor_name=request.form["visitor_name"],
+            phone=request.form["phone"],
+            visit_date=request.form["visit_date"],
+            purpose=request.form["purpose"]
+        )
+
+        db.session.add(visitor)
+        db.session.commit()
+
+    visitors = Visitor.query.filter_by(
+        resident_id=session["id"]
+    ).all()
+
+    return render_template(
+        "visitors.html",
+        visitors=visitors
+    )
 
 
-# ================= RESIDENT MAINTENANCE =================
+# ================= DELETE VISITOR =================
 
-@app.route("/maintenance")
+@app.route("/visitors/delete/<int:id>", methods=["POST"])
+def delete_visitor(id):
+
+    if session.get("type") != "resident":
+        return redirect("/login")
+
+    visitor = Visitor.query.get_or_404(id)
+
+    if visitor.resident_id == session["id"]:
+
+        db.session.delete(visitor)
+        db.session.commit()
+
+    return redirect("/visitors")
+
+
+# ================= MAINTENANCE =================
+
+@app.route("/maintenance", methods=["GET", "POST"])
 def maintenance():
+
     if session.get("type") != "resident":
         return redirect("/login")
 
-    return render_template("maintenance.html")
+    if request.method == "POST":
+
+        maintenance_request = Maintenance(
+            resident_id=session["id"],
+            title=request.form["title"],
+            description=request.form["description"]
+        )
+
+        db.session.add(maintenance_request)
+        db.session.commit()
+
+    requests = Maintenance.query.filter_by(
+        resident_id=session["id"]
+    ).all()
+
+    return render_template(
+        "maintenance.html",
+        requests=requests
+    )
 
 
-# ================= RESIDENT PROFILE =================
+# ================= DELETE MAINTENANCE =================
+
+@app.route(
+    "/maintenance/delete/<int:id>",
+    methods=["POST"]
+)
+def delete_maintenance(id):
+
+    if session.get("type") != "resident":
+        return redirect("/login")
+
+    maintenance_request = Maintenance.query.get_or_404(id)
+
+    if maintenance_request.resident_id == session["id"]:
+
+        db.session.delete(maintenance_request)
+        db.session.commit()
+
+    return redirect("/maintenance")
+
+
+# ================= PROFILE =================
 
 @app.route("/profile")
 def profile():
+
     if session.get("type") != "resident":
         return redirect("/login")
 
@@ -175,15 +285,18 @@ def profile():
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
+
     if request.method == "POST":
-        a = Admin.query.filter_by(
+
+        admin = Admin.query.filter_by(
             email=request.form["email"].lower()
         ).first()
 
-        if a and check_password_hash(
-            a.password,
+        if admin and check_password_hash(
+            admin.password,
             request.form["password"]
         ):
+
             session.clear()
             session["type"] = "admin"
 
@@ -196,10 +309,12 @@ def admin_login():
 
 @app.route("/admin/dashboard")
 def admin_dashboard():
+
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
     total_residents = Resident.query.count()
+
     total_complaints = Complaint.query.count()
 
     pending = Complaint.query.filter_by(
@@ -219,10 +334,42 @@ def admin_dashboard():
     )
 
 
+# ================= ADMIN COMPLAINTS =================
+
+@app.route(
+    "/admin/complaints",
+    methods=["GET", "POST"]
+)
+def admin_complaints():
+
+    if session.get("type") != "admin":
+        return redirect("/admin/login")
+
+    if request.method == "POST":
+
+        complaint = Complaint.query.get(
+            request.form["id"]
+        )
+
+        if complaint:
+
+            complaint.status = request.form["status"]
+
+            db.session.commit()
+
+    complaints = Complaint.query.all()
+
+    return render_template(
+        "admin_complaints.html",
+        complaints=complaints
+    )
+
+
 # ================= FILTER COMPLAINTS =================
 
 @app.route("/admin/complaints/<status>")
 def complaint_status(status):
+
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
@@ -239,34 +386,11 @@ def complaint_status(status):
     )
 
 
-# ================= ADMIN COMPLAINT MANAGEMENT =================
-
-@app.route("/admin/complaints", methods=["GET", "POST"])
-def admin_complaints():
-    if session.get("type") != "admin":
-        return redirect("/admin/login")
-
-    if request.method == "POST":
-        complaint = Complaint.query.get(
-            request.form["id"]
-        )
-
-        if complaint:
-            complaint.status = request.form["status"]
-            db.session.commit()
-
-    complaints = Complaint.query.all()
-
-    return render_template(
-        "admin_complaints.html",
-        complaints=complaints
-    )
-
-
-# ================= ADMIN RESIDENT MANAGEMENT =================
+# ================= ADMIN RESIDENTS =================
 
 @app.route("/admin/residents")
 def admin_residents():
+
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
@@ -285,6 +409,7 @@ def admin_residents():
     methods=["POST"]
 )
 def delete_resident(id):
+
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
@@ -296,17 +421,68 @@ def delete_resident(id):
     return redirect("/admin/residents")
 
 
+# ================= ADMIN MAINTENANCE =================
+
+@app.route("/admin/maintenance")
+def admin_maintenance():
+
+    if session.get("type") != "admin":
+        return redirect("/admin/login")
+
+    requests = Maintenance.query.all()
+
+    return render_template(
+        "admin_maintenance.html",
+        requests=requests
+    )
+
+
+# ================= UPDATE MAINTENANCE STATUS =================
+
+@app.route(
+    "/admin/maintenance/update",
+    methods=["POST"]
+)
+def update_maintenance():
+
+    if session.get("type") != "admin":
+        return redirect("/admin/login")
+
+    request_id = request.form["id"]
+
+    new_status = request.form["status"]
+
+    maintenance_request = Maintenance.query.get_or_404(
+        request_id
+    )
+
+    if new_status in [
+        "Pending",
+        "In Progress",
+        "Resolved"
+    ]:
+
+        maintenance_request.status = new_status
+
+        db.session.commit()
+
+    return redirect("/admin/maintenance")
+
+
 # ================= LOGOUT =================
 
 @app.route("/logout")
 def logout():
+
     session.clear()
+
     return redirect("/")
 
 
 # ================= DATABASE SETUP =================
 
 with app.app_context():
+
     db.create_all()
 
     if not Admin.query.filter_by(
@@ -315,7 +491,9 @@ with app.app_context():
 
         admin = Admin(
             email="admin@smartsociety.com",
-            password=generate_password_hash("admin123")
+            password=generate_password_hash(
+                "admin123"
+            )
         )
 
         db.session.add(admin)

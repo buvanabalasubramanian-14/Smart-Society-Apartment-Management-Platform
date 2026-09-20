@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Maintenance Management</title>
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f5f7fb;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        .header, .card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .card {
+            margin-top: 25px;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        .request {
+            background: #f5f7fb;
+            padding: 18px;
+            margin-top: 15px;
+            border-radius: 10px;
+        }
+
+        select {
+            padding: 9px;
+            border-radius: 7px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 9px 15px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        .back {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 11px 20px;
+            background: #222;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <h1>Maintenance Management</h1>
+        <p>View and manage resident maintenance requests.</p>
+    </div>
+
+
+    <div class="card">
+
+        <h2>Maintenance Requests</h2>
+
+        {% if requests %}
+
+            {% for item in requests %}
+
+            <div class="request">
+
+                <h3>
+                    {{ item.title }}
+                </h3>
+
+                <p>
+                    {{ item.description }}
+                </p>
+
+                <p>
+                    Resident ID:
+                    <strong>{{ item.resident_id }}</strong>
+                </p>
+
+                <p>
+                    Current Status:
+                    <span class="status">
+                        {{ item.status }}
+                    </span>
+                </p>
+
+
+                <form method="POST"
+                      action="/admin/maintenance/update">
+
+                    <input type="hidden"
+                           name="id"
+                           value="{{ item.id }}">
+
+                    <select name="status">
+
+                        <option value="Pending"
+                            {% if item.status == "Pending" %}selected{% endif %}>
+                            Pending
+                        </option>
+
+                        <option value="In Progress"
+                            {% if item.status == "In Progress" %}selected{% endif %}>
+                            In Progress
+                        </option>
+
+                        <option value="Resolved"
+                            {% if item.status == "Resolved" %}selected{% endif %}>
+                            Resolved
+                        </option>
+
+                    </select>
+
+                    <button type="submit">
+                        Update Status
+                    </button>
+
+                </form>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No maintenance requests available.</p>
+
+        {% endif %}
+
+    </div>
+
+
+    <a class="back" href="/admin/dashboard">
+        ← Back to Dashboard
+    </a>
+
+</div>
+
+</body>
+</html>
