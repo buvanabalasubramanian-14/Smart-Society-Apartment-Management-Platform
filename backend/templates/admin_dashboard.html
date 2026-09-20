@@ -2,20 +2,131 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>Admin Dashboard | Smart Society</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+            text-decoration: none;
+            color: inherit;
+            transition: 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            background: #f1f5f9;
+            flex-shrink: 0;
+        }
+
+        .stat-card h3 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .stat-card p {
+            margin: 4px 0 0;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .click-hint {
+            margin-left: auto;
+            color: #64748b;
+            font-size: 20px;
+        }
+
+        .quick-title {
+            margin-bottom: 16px;
+        }
+
+        .quick-title small {
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .quick-title h2 {
+            margin: 5px 0 0;
+        }
+
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .module-card {
+            text-decoration: none;
+        }
+
+        @media (max-width: 900px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .module-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
+
 <div class="dashboard-page">
 
+
+    <!-- SIDEBAR -->
+
     <aside class="sidebar">
+
 
         <div class="sidebar-brand">
 
@@ -24,8 +135,15 @@
             </div>
 
             <div>
-                <h2>Smart Society</h2>
-                <p>Admin Panel</p>
+
+                <h2>
+                    Smart Society
+                </h2>
+
+                <p>
+                    Admin Panel
+                </p>
+
             </div>
 
         </div>
@@ -33,49 +151,70 @@
 
         <nav class="sidebar-menu">
 
+
             <a href="/admin/dashboard"
                class="menu-item active">
+
                 🏠 Dashboard
+
             </a>
+
 
             <a href="/admin/complaints"
                class="menu-item">
+
                 📝 Complaints
+
             </a>
+
 
             <a href="/admin/residents"
                class="menu-item">
+
                 👥 Residents
+
             </a>
+
 
         </nav>
 
 
         <div class="sidebar-bottom">
 
-            <a href="/admin/logout"
+            <a href="/logout"
                class="logout-btn">
+
                 ↪ Logout
+
             </a>
 
         </div>
 
+
     </aside>
 
 
+    <!-- MAIN CONTENT -->
+
     <main class="dashboard-main">
+
+
+        <!-- TOP BAR -->
 
         <header class="topbar">
 
             <div>
 
-                <span>ADMIN PANEL</span>
+                <span>
+                    ADMIN PANEL
+                </span>
 
                 <h1>
                     Welcome, Admin 👋
                 </h1>
 
             </div>
+
 
             <div class="user-badge">
                 🛡️
@@ -84,22 +223,27 @@
         </header>
 
 
+        <!-- WELCOME CARD -->
+
         <section class="welcome-card">
 
             <div>
 
-                <small>SMART SOCIETY</small>
+                <small>
+                    SMART SOCIETY
+                </small>
 
                 <h2>
                     Society management made simple.
                 </h2>
 
                 <p>
-                    Manage residents and monitor society
-                    complaints from one place.
+                    Manage residents, complaints and
+                    society activities from one place.
                 </p>
 
             </div>
+
 
             <div class="welcome-icon">
                 🏢
@@ -108,20 +252,167 @@
         </section>
 
 
+        <!-- DASHBOARD STATISTICS -->
+
         <section>
+
 
             <div class="section-heading">
 
-                <small>ADMIN SERVICES</small>
+                <small>
+                    SOCIETY OVERVIEW
+                </small>
 
                 <h2>
-                    Management Overview
+                    Dashboard Statistics
+                </h2>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+
+                <!-- TOTAL RESIDENTS -->
+
+                <a href="/admin/residents"
+                   class="stat-card">
+
+                    <div class="stat-icon">
+                        👥
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            {{ total_residents }}
+                        </h3>
+
+                        <p>
+                            Total Residents
+                        </p>
+
+                    </div>
+
+                    <span class="click-hint">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- TOTAL COMPLAINTS -->
+
+                <a href="/admin/complaints"
+                   class="stat-card">
+
+                    <div class="stat-icon">
+                        📝
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            {{ total_complaints }}
+                        </h3>
+
+                        <p>
+                            Total Complaints
+                        </p>
+
+                    </div>
+
+                    <span class="click-hint">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- PENDING COMPLAINTS -->
+
+                <a href="/admin/complaints/Pending"
+                   class="stat-card">
+
+                    <div class="stat-icon">
+                        ⏳
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            {{ pending }}
+                        </h3>
+
+                        <p>
+                            Pending Complaints
+                        </p>
+
+                    </div>
+
+                    <span class="click-hint">
+                        →
+                    </span>
+
+                </a>
+
+
+                <!-- RESOLVED COMPLAINTS -->
+
+                <a href="/admin/complaints/Resolved"
+                   class="stat-card">
+
+                    <div class="stat-icon">
+                        ✅
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            {{ resolved }}
+                        </h3>
+
+                        <p>
+                            Resolved Complaints
+                        </p>
+
+                    </div>
+
+                    <span class="click-hint">
+                        →
+                    </span>
+
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- QUICK MANAGEMENT -->
+
+        <section>
+
+
+            <div class="quick-title">
+
+                <small>
+                    ADMIN SERVICES
+                </small>
+
+                <h2>
+                    Quick Management
                 </h2>
 
             </div>
 
 
             <div class="module-grid">
+
+
+                <!-- COMPLAINT MANAGEMENT -->
 
                 <a href="/admin/complaints"
                    class="module-card">
@@ -133,19 +424,24 @@
                     <div>
 
                         <h3>
-                            Complaints
+                            Complaint Management
                         </h3>
 
                         <p>
-                            View and manage resident complaints.
+                            View resident complaints and
+                            update their status.
                         </p>
 
                     </div>
 
-                    <b>→</b>
+                    <b>
+                        →
+                    </b>
 
                 </a>
 
+
+                <!-- RESIDENT MANAGEMENT -->
 
                 <a href="/admin/residents"
                    class="module-card">
@@ -157,26 +453,34 @@
                     <div>
 
                         <h3>
-                            Residents
+                            Resident Management
                         </h3>
 
                         <p>
-                            View registered society residents.
+                            View registered residents and
+                            manage resident records.
                         </p>
 
                     </div>
 
-                    <b>→</b>
+                    <b>
+                        →
+                    </b>
 
                 </a>
 
+
             </div>
+
 
         </section>
 
+
     </main>
 
+
 </div>
+
 
 </body>
 

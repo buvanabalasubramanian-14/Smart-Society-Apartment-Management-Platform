@@ -13,6 +13,42 @@
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
 
+    <style>
+
+        .status-form {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .status-form select {
+            padding: 9px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .status-form button {
+            padding: 9px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .status-label {
+            font-weight: 600;
+        }
+
+        .complaint-status {
+            margin-top: 8px;
+        }
+
+    </style>
+
 </head>
 
 <body>
@@ -21,13 +57,17 @@
 
     <main class="dashboard-main">
 
+        <!-- TOP BAR -->
+
         <header class="topbar">
 
             <div>
 
                 <span>ADMIN PANEL</span>
 
-                <h1>Complaints 📝</h1>
+                <h1>
+                    Complaints 📝
+                </h1>
 
             </div>
 
@@ -38,16 +78,23 @@
         </header>
 
 
+        <!-- WELCOME -->
+
         <section class="welcome-card">
 
             <div>
 
-                <small>COMPLAINT MANAGEMENT</small>
+                <small>
+                    COMPLAINT MANAGEMENT
+                </small>
 
-                <h2>Resident Complaints</h2>
+                <h2>
+                    Resident Complaints
+                </h2>
 
                 <p>
-                    View complaints submitted by residents.
+                    View and manage complaints submitted
+                    by society residents.
                 </p>
 
             </div>
@@ -59,13 +106,19 @@
         </section>
 
 
+        <!-- COMPLAINT LIST -->
+
         <section>
 
             <div class="section-heading">
 
-                <small>ALL COMPLAINTS</small>
+                <small>
+                    ALL COMPLAINTS
+                </small>
 
-                <h2>Complaint List</h2>
+                <h2>
+                    Complaint List
+                </h2>
 
             </div>
 
@@ -82,15 +135,18 @@
                                 📝
                             </div>
 
+
                             <div>
 
                                 <h3>
                                     {{ complaint.title }}
                                 </h3>
 
+
                                 <p>
                                     {{ complaint.description }}
                                 </p>
+
 
                                 <p>
                                     <strong>
@@ -100,6 +156,7 @@
                                     {{ complaint.id }}
                                 </p>
 
+
                                 <p>
                                     <strong>
                                         Resident ID:
@@ -108,13 +165,61 @@
                                     {{ complaint.resident_id }}
                                 </p>
 
-                                <p>
+
+                                <!-- CURRENT STATUS -->
+
+                                <p class="complaint-status">
+
                                     <strong>
-                                        Status:
+                                        Current Status:
                                     </strong>
 
                                     {{ complaint.status }}
+
                                 </p>
+
+
+                                <!-- STATUS UPDATE -->
+
+                                <form
+                                    method="POST"
+                                    action="/admin/complaints"
+                                    class="status-form">
+
+                                    <label class="status-label">
+                                        Update:
+                                    </label>
+
+                                    <select name="status">
+
+                                        <option value="Pending"
+                                            {% if complaint.status == "Pending" %}
+                                                selected
+                                            {% endif %}>
+                                            Pending
+                                        </option>
+
+                                        <option value="Resolved"
+                                            {% if complaint.status == "Resolved" %}
+                                                selected
+                                            {% endif %}>
+                                            Resolved
+                                        </option>
+
+                                    </select>
+
+
+                                    <input
+                                        type="hidden"
+                                        name="id"
+                                        value="{{ complaint.id }}">
+
+
+                                    <button type="submit">
+                                        Update
+                                    </button>
+
+                                </form>
 
                             </div>
 
@@ -149,6 +254,7 @@
 
 
         <br>
+
 
         <a href="/admin/dashboard">
             ← Back to Admin Dashboard
