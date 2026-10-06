@@ -26,4 +26,4 @@ jobs:
         run: flake8 backend --ignore=E111,E117,E302,E501,E722,W292
 
       - name: Run tests
-        run: pytest
+        run: cd backend && pytest
