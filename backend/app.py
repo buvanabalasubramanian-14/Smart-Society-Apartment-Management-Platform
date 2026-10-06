@@ -2,11 +2,10 @@ from flask import Flask, request, redirect, session, render_template
 import os
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
+from ai_engine import analyze_complaint
 
 app = Flask(__name__)
 app.secret_key = "smart"
-
-# ================= DATABASE PATH =================
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -23,8 +22,6 @@ else:
 
 db = SQLAlchemy(app)
 
-
-# ================= DATABASE MODELS =================
 
 class Resident(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -66,8 +63,6 @@ class Maintenance(db.Model):
     status = db.Column(db.String(30), default="Pending")
 
 
-# ================= HEALTH =================
-
 @app.route("/health")
 def health():
     return {
@@ -76,14 +71,10 @@ def health():
     }
 
 
-# ================= HOME =================
-
 @app.route("/")
 def home():
     return render_template("home.html")
 
-
-# ================= REGISTER =================
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -113,8 +104,6 @@ def register():
     return render_template("register.html")
 
 
-# ================= RESIDENT LOGIN =================
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
 
@@ -140,8 +129,6 @@ def login():
     return render_template("login.html")
 
 
-# ================= RESIDENT DASHBOARD =================
-
 @app.route("/dashboard")
 def dashboard():
 
@@ -150,8 +137,6 @@ def dashboard():
 
     return render_template("dashboard.html")
 
-
-# ================= COMPLAINTS =================
 
 @app.route("/complaints", methods=["GET", "POST"])
 def complaints():
@@ -179,8 +164,6 @@ def complaints():
         complaints=complaints
     )
 
-
-# ================= VISITORS =================
 
 @app.route("/visitors", methods=["GET", "POST"])
 def visitors():
@@ -211,8 +194,6 @@ def visitors():
     )
 
 
-# ================= DELETE VISITOR =================
-
 @app.route("/visitors/delete/<int:id>", methods=["POST"])
 def delete_visitor(id):
 
@@ -228,8 +209,6 @@ def delete_visitor(id):
 
     return redirect("/visitors")
 
-
-# ================= MAINTENANCE =================
 
 @app.route("/maintenance", methods=["GET", "POST"])
 def maintenance():
@@ -258,12 +237,7 @@ def maintenance():
     )
 
 
-# ================= DELETE MAINTENANCE =================
-
-@app.route(
-    "/maintenance/delete/<int:id>",
-    methods=["POST"]
-)
+@app.route("/maintenance/delete/<int:id>", methods=["POST"])
 def delete_maintenance(id):
 
     if session.get("type") != "resident":
@@ -279,8 +253,6 @@ def delete_maintenance(id):
     return redirect("/maintenance")
 
 
-# ================= PROFILE =================
-
 @app.route("/profile")
 def profile():
 
@@ -294,8 +266,6 @@ def profile():
         resident=resident
     )
 
-
-# ================= ADMIN LOGIN =================
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
@@ -319,8 +289,6 @@ def admin_login():
     return render_template("admin_login.html")
 
 
-# ================= ADMIN DASHBOARD =================
-
 @app.route("/admin/dashboard")
 def admin_dashboard():
 
@@ -339,16 +307,81 @@ def admin_dashboard():
         status="Resolved"
     ).count()
 
+    complaints = Complaint.query.all()
+
+    critical = 0
+    high = 0
+    medium = 0
+    low = 0
+
+    categories = {}
+
+    priority_complaints = []
+
+    for complaint in complaints:
+
+        text = complaint.title + " " + complaint.description
+
+        ai = analyze_complaint(text)
+
+        risk = ai["risk"]
+        category = ai["category"]
+
+        if risk == "Critical":
+            critical += 1
+
+        elif risk == "High":
+            high += 1
+
+        elif risk == "Medium":
+            medium += 1
+
+        elif risk == "Low":
+            low += 1
+
+        categories[category] = categories.get(
+            category,
+            0
+        ) + 1
+
+        if complaint.status != "Resolved":
+
+            priority_complaints.append({
+                "title": complaint.title,
+                "risk": ai["risk"],
+                "risk_score": ai["risk_score"],
+                "category": ai["category"],
+                "recommendation": ai["recommendation"]
+            })
+
+    priority_complaints.sort(
+        key=lambda x: x["risk_score"],
+        reverse=True
+    )
+
+    most_common_category = "No Data"
+
+    if categories:
+
+        most_common_category = max(
+            categories,
+            key=categories.get
+        )
+
     return render_template(
         "admin_dashboard.html",
         total_residents=total_residents,
         total_complaints=total_complaints,
         pending=pending,
-        resolved=resolved
+        resolved=resolved,
+        critical=critical,
+        high=high,
+        medium=medium,
+        low=low,
+        most_common_category=most_common_category,
+        priority_complaints=priority_complaints[:3]
     )
 
-
-# ================= ADMIN COMPLAINTS =================
 
 @app.route(
     "/admin/complaints",
@@ -373,13 +406,20 @@ def admin_complaints():
 
     complaints = Complaint.query.all()
 
+    ai_results = {}
+
+    for complaint in complaints:
+
+        text = complaint.title + " " + complaint.description
+
+        ai_results[complaint.id] = analyze_complaint(text)
+
     return render_template(
         "admin_complaints.html",
-        complaints=complaints
+        complaints=complaints,
+        ai_results=ai_results
     )
 
-
-# ================= FILTER COMPLAINTS =================
 
 @app.route("/admin/complaints/<status>")
 def complaint_status(status):
@@ -394,13 +434,20 @@ def complaint_status(status):
         status=status
     ).all()
 
+    ai_results = {}
+
+    for complaint in complaints:
+
+        text = complaint.title + " " + complaint.description
+
+        ai_results[complaint.id] = analyze_complaint(text)
+
     return render_template(
         "admin_complaints.html",
-        complaints=complaints
+        complaints=complaints,
+        ai_results=ai_results
     )
 
-
-# ================= ADMIN RESIDENTS =================
 
 @app.route("/admin/residents")
 def admin_residents():
@@ -415,8 +462,6 @@ def admin_residents():
         residents=residents
     )
 
-
-# ================= DELETE RESIDENT =================
 
 @app.route(
     "/admin/resident/delete/<int:id>",
@@ -435,8 +480,6 @@ def delete_resident(id):
     return redirect("/admin/residents")
 
 
-# ================= ADMIN VISITORS =================
-
 @app.route("/admin/visitors")
 def admin_visitors():
 
@@ -451,8 +494,6 @@ def admin_visitors():
     )
 
 
-# ================= ADMIN MAINTENANCE =================
-
 @app.route("/admin/maintenance")
 def admin_maintenance():
 
@@ -466,8 +507,6 @@ def admin_maintenance():
         requests=requests
     )
 
-
-# ================= UPDATE MAINTENANCE STATUS =================
 
 @app.route(
     "/admin/maintenance/update",
@@ -499,8 +538,6 @@ def update_maintenance():
     return redirect("/admin/maintenance")
 
 
-# ================= LOGOUT =================
-
 @app.route("/logout")
 def logout():
 
@@ -508,8 +545,6 @@ def logout():
 
     return redirect("/")
 
-
-# ================= DATABASE SETUP =================
 
 with app.app_context():
 
@@ -534,8 +569,6 @@ with app.app_context():
         db.session.add(admin)
         db.session.commit()
 
-
-# ================= RUN =================
 
 if __name__ == "__main__":
     app.run(debug=True)

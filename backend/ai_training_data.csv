@@ -1,0 +1,36 @@
+complaint,category,risk
+Water pipe is leaking continuously,Plumbing,High
+Water leakage in bathroom,Plumbing,Medium
+No water supply in my flat,Plumbing,High
+Kitchen tap is broken,Plumbing,Medium
+Drainage pipe is blocked,Plumbing,High
+Sewage water is overflowing,Plumbing,Critical
+Bathroom pipe burst and water is flooding,Plumbing,Critical
+Ceiling water leakage affecting the room,Plumbing,High
+Fan is not working,Electrical,Medium
+Power socket is damaged,Electrical,High
+Frequent power failure in my flat,Electrical,High
+Light is not working,Electrical,Low
+Electrical wire is exposed,Electrical,Critical
+Short circuit happened in kitchen,Electrical,Critical
+Lift is not working,Lift,High
+Lift stopped between floors,Lift,Critical
+Lift making unusual noise,Lift,High
+Corridor light is not working,Electrical,Low
+Garbage is not collected,Cleaning,Medium
+Common area is not cleaned,Cleaning,Low
+Waste is overflowing near apartment,Cleaning,High
+Parking area needs cleaning,Cleaning,Low
+Unknown person entered the apartment,Security,Critical
+Main gate security is not available,Security,High
+CCTV camera is not working,Security,High
+Apartment gate is damaged,Security,Medium
+Door lock is broken,Security,High
+Wall has developed cracks,Structural,Critical
+Ceiling has major cracks,Structural,Critical
+Building wall has water damage,Structural,High
+Paint is damaged in common area,General,Low
+Minor repair needed in bedroom,General,Low
+Maintenance issue has been pending for many days,General,High
+Repeated complaint about the same issue,General,High
+Emergency maintenance required immediately,General,Critical

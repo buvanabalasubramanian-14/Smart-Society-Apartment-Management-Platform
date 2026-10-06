@@ -5,3 +5,6 @@ pytest
 flake8
 gunicorn
 psycopg2-binary
+pandas
+numpy
+scikit-learn
