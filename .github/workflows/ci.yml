@@ -23,7 +23,7 @@ jobs:
         run: pip install -r backend/requirements.txt
 
       - name: Lint
-        run: flake8 backend --ignore=E111,E117,E302,E501,E722,W292
+        run: flake8 backend --ignore=E111,E117,E302,E303,E501,E722,W292,W503
 
       - name: Run tests
         run: cd backend && pytest

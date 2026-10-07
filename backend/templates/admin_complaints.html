@@ -47,6 +47,38 @@
             margin-top: 8px;
         }
 
+        .ai-box {
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #f5f7ff;
+            border: 1px solid #dbe1ff;
+        }
+
+        .ai-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .ai-row {
+            margin: 6px 0;
+        }
+
+        .risk-high {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .risk-medium {
+            color: #d97706;
+            font-weight: 700;
+        }
+
+        .risk-low {
+            color: #16a34a;
+            font-weight: 700;
+        }
+
     </style>
 
 </head>
@@ -56,8 +88,6 @@
 <div class="dashboard-page">
 
     <main class="dashboard-main">
-
-        <!-- TOP BAR -->
 
         <header class="topbar">
 
@@ -77,8 +107,6 @@
 
         </header>
 
-
-        <!-- WELCOME -->
 
         <section class="welcome-card">
 
@@ -105,8 +133,6 @@
 
         </section>
 
-
-        <!-- COMPLAINT LIST -->
 
         <section>
 
@@ -166,8 +192,6 @@
                                 </p>
 
 
-                                <!-- CURRENT STATUS -->
-
                                 <p class="complaint-status">
 
                                     <strong>
@@ -179,7 +203,86 @@
                                 </p>
 
 
-                                <!-- STATUS UPDATE -->
+                                <!-- AI ANALYSIS -->
+
+                                {% if ai_results and complaint.id in ai_results %}
+
+                                    {% set ai = ai_results[complaint.id] %}
+
+                                    <div class="ai-box">
+
+                                        <div class="ai-title">
+                                            🤖 AI Complaint Intelligence
+                                        </div>
+
+                                        <div class="ai-row">
+
+                                            <strong>
+                                                Category:
+                                            </strong>
+
+                                            {{ ai.category }}
+
+                                        </div>
+
+                                        <div class="ai-row">
+
+                                            <strong>
+                                                Risk Level:
+                                            </strong>
+
+                                            {% if ai.risk == "Critical" %}
+
+                                                <span class="risk-high">
+                                                    🔴 {{ ai.risk }}
+                                                </span>
+
+                                            {% elif ai.risk == "High" %}
+
+                                                <span class="risk-high">
+                                                    🟠 {{ ai.risk }}
+                                                </span>
+
+                                            {% elif ai.risk == "Medium" %}
+
+                                                <span class="risk-medium">
+                                                    🟡 {{ ai.risk }}
+                                                </span>
+
+                                            {% else %}
+
+                                                <span class="risk-low">
+                                                    🟢 {{ ai.risk }}
+                                                </span>
+
+                                            {% endif %}
+
+                                        </div>
+
+                                        <div class="ai-row">
+
+                                            <strong>
+                                                AI Risk Score:
+                                            </strong>
+
+                                            {{ ai.risk_score }}%
+
+                                        </div>
+
+                                        <div class="ai-row">
+
+                                            <strong>
+                                                Recommendation:
+                                            </strong>
+
+                                            {{ ai.recommendation }}
+
+                                        </div>
+
+                                    </div>
+
+                                {% endif %}
+
 
                                 <form
                                     method="POST"

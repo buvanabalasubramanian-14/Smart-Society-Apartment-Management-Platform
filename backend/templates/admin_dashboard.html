@@ -92,9 +92,163 @@
             text-decoration: none;
         }
 
+        .ai-section {
+            margin-top: 35px;
+            margin-bottom: 35px;
+        }
+
+        .ai-header small {
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .ai-header h2 {
+            margin: 5px 0 18px;
+        }
+
+        .ai-box {
+            background: linear-gradient(135deg, #f8fbff, #eef6ff);
+            border-radius: 18px;
+            padding: 24px;
+            border: 1px solid #dbeafe;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+        }
+
+        .ai-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .ai-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .ai-card {
+            background: white;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+
+        .ai-card h3 {
+            margin: 0;
+            font-size: 25px;
+        }
+
+        .ai-card p {
+            margin: 5px 0 0;
+            color: #64748b;
+            font-size: 13px;
+        }
+
+        .critical {
+            border-left: 5px solid #dc2626;
+        }
+
+        .high {
+            border-left: 5px solid #f97316;
+        }
+
+        .medium {
+            border-left: 5px solid #eab308;
+        }
+
+        .low {
+            border-left: 5px solid #22c55e;
+        }
+
+        .ai-summary {
+            margin-top: 18px;
+            background: white;
+            border-radius: 14px;
+            padding: 18px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+
+        .ai-summary strong {
+            color: #334155;
+        }
+
+        .category-name {
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+        .priority-section {
+            margin-top: 25px;
+        }
+
+        .priority-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .priority-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 12px;
+            border-left: 5px solid #f97316;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+
+        .priority-card.critical-alert {
+            border-left-color: #dc2626;
+        }
+
+        .priority-card.high-alert {
+            border-left-color: #f97316;
+        }
+
+        .priority-card.medium-alert {
+            border-left-color: #eab308;
+        }
+
+        .priority-card h4 {
+            margin: 0 0 8px;
+            font-size: 17px;
+        }
+
+        .priority-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .priority-badge {
+            background: #f1f5f9;
+            padding: 5px 9px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .recommendation {
+            margin-top: 8px;
+            color: #475569;
+            font-size: 13px;
+        }
+
+        .no-alert {
+            background: #ffffff;
+            padding: 18px;
+            border-radius: 14px;
+            color: #64748b;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.05);
+        }
+
         @media (max-width: 900px) {
 
             .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .ai-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
 
@@ -110,6 +264,10 @@
                 grid-template-columns: 1fr;
             }
 
+            .ai-grid {
+                grid-template-columns: 1fr;
+            }
+
         }
 
     </style>
@@ -121,8 +279,6 @@
 
 <div class="dashboard-page">
 
-
-    <!-- SIDEBAR -->
 
     <aside class="sidebar">
 
@@ -156,7 +312,6 @@
 
             </a>
 
-
             <a href="/admin/complaints"
                class="menu-item">
 
@@ -164,14 +319,12 @@
 
             </a>
 
-
             <a href="/admin/residents"
                class="menu-item">
 
                 👥 Residents
 
             </a>
-
 
             <a href="/admin/maintenance"
                class="menu-item">
@@ -197,12 +350,8 @@
     </aside>
 
 
-    <!-- MAIN CONTENT -->
-
     <main class="dashboard-main">
 
-
-        <!-- TOP BAR -->
 
         <header class="topbar">
 
@@ -218,15 +367,12 @@
 
             </div>
 
-
             <div class="user-badge">
                 🛡️
             </div>
 
         </header>
 
-
-        <!-- WELCOME CARD -->
 
         <section class="welcome-card">
 
@@ -248,15 +394,12 @@
 
             </div>
 
-
             <div class="welcome-icon">
                 🏢
             </div>
 
         </section>
 
-
-        <!-- DASHBOARD STATISTICS -->
 
         <section>
 
@@ -275,8 +418,6 @@
 
             <div class="stats-grid">
 
-
-                <!-- TOTAL RESIDENTS -->
 
                 <a href="/admin/residents"
                    class="stat-card">
@@ -304,8 +445,6 @@
                 </a>
 
 
-                <!-- TOTAL COMPLAINTS -->
-
                 <a href="/admin/complaints"
                    class="stat-card">
 
@@ -332,8 +471,6 @@
                 </a>
 
 
-                <!-- PENDING COMPLAINTS -->
-
                 <a href="/admin/complaints/Pending"
                    class="stat-card">
 
@@ -359,8 +496,6 @@
 
                 </a>
 
-
-                <!-- RESOLVED COMPLAINTS -->
 
                 <a href="/admin/complaints/Resolved"
                    class="stat-card">
@@ -393,10 +528,177 @@
         </section>
 
 
-        <!-- QUICK MANAGEMENT -->
+        <section class="ai-section">
+
+            <div class="ai-header">
+
+                <small>
+                    ARTIFICIAL INTELLIGENCE
+                </small>
+
+                <h2>
+                    🤖 AI Society Intelligence
+                </h2>
+
+            </div>
+
+
+            <div class="ai-box">
+
+                <div class="ai-title">
+                    AI Complaint Risk Analysis
+                </div>
+
+
+                <div class="ai-grid">
+
+
+                    <div class="ai-card critical">
+
+                        <h3>
+                            {{ critical }}
+                        </h3>
+
+                        <p>
+                            Critical Risk
+                        </p>
+
+                    </div>
+
+
+                    <div class="ai-card high">
+
+                        <h3>
+                            {{ high }}
+                        </h3>
+
+                        <p>
+                            High Risk
+                        </p>
+
+                    </div>
+
+
+                    <div class="ai-card medium">
+
+                        <h3>
+                            {{ medium }}
+                        </h3>
+
+                        <p>
+                            Medium Risk
+                        </p>
+
+                    </div>
+
+
+                    <div class="ai-card low">
+
+                        <h3>
+                            {{ low }}
+                        </h3>
+
+                        <p>
+                            Low Risk
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="ai-summary">
+
+                    <strong>
+                        Most Common Complaint Category:
+                    </strong>
+
+                    <span class="category-name">
+                        {{ most_common_category }}
+                    </span>
+
+                </div>
+
+
+                <div class="priority-section">
+
+                    <div class="priority-title">
+                        🚨 AI Priority Alerts
+                    </div>
+
+
+                    {% if priority_complaints %}
+
+                        {% for complaint in priority_complaints %}
+
+                            <div class="priority-card
+                                {% if complaint.risk == 'Critical' %}
+                                    critical-alert
+                                {% elif complaint.risk == 'High' %}
+                                    high-alert
+                                {% else %}
+                                    medium-alert
+                                {% endif %}">
+
+                                <h4>
+                                    {{ complaint.title }}
+                                </h4>
+
+
+                                <div class="priority-info">
+
+                                    <span class="priority-badge">
+                                        Category:
+                                        {{ complaint.category }}
+                                    </span>
+
+                                    <span class="priority-badge">
+                                        Risk:
+                                        {{ complaint.risk }}
+                                    </span>
+
+                                    <span class="priority-badge">
+                                        Score:
+                                        {{ complaint.risk_score }}%
+                                    </span>
+
+                                </div>
+
+
+                                <div class="recommendation">
+
+                                    <strong>
+                                        AI Recommendation:
+                                    </strong>
+
+                                    {{ complaint.recommendation }}
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div class="no-alert">
+
+                            ✅ No unresolved priority complaints.
+
+                        </div>
+
+                    {% endif %}
+
+
+                </div>
+
+            </div>
+
+        </section>
+
 
         <section>
-
 
             <div class="quick-title">
 
@@ -413,8 +715,6 @@
 
             <div class="module-grid">
 
-
-                <!-- COMPLAINT MANAGEMENT -->
 
                 <a href="/admin/complaints"
                    class="module-card">
@@ -443,8 +743,6 @@
                 </a>
 
 
-                <!-- RESIDENT MANAGEMENT -->
-
                 <a href="/admin/residents"
                    class="module-card">
 
@@ -472,8 +770,6 @@
                 </a>
 
 
-                <!-- MAINTENANCE MANAGEMENT -->
-
                 <a href="/admin/maintenance"
                    class="module-card">
 
@@ -500,8 +796,6 @@
 
                 </a>
 
-
-                <!-- VISITOR MANAGEMENT -->
 
                 <a href="/admin/visitors"
                    class="module-card">
@@ -537,9 +831,7 @@
 
     </main>
 
-
 </div>
-
 
 </body>
 
