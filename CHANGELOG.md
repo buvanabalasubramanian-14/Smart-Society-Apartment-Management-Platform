@@ -1,12 +1,16 @@
-# Changelog
+Changelog
 
-## Version 0.1 – Day 1
+All notable changes to the Smart Society Apartment Management Platform are documented in this file.
+
+Version 0.1 – Day 1
+
 - Created project repository
 - Created project folder structure
 - Added README.md
 - Added Problem_Statement.md
 
-## Version 0.2 – Development
+Version 0.2 – Development
+
 - Added Flask backend
 - Added resident registration and login
 - Added resident dashboard
@@ -19,14 +23,16 @@
 - Added password hashing
 - Added health check endpoint
 
-## Version 0.3 – Testing
+Version 0.3 – Testing
+
 - Added Pytest test cases
 - Added Flake8 linting
 - Added GitHub Actions CI workflow
 - Verified application routes and protected pages
 - Tested resident and admin workflows
 
-## Version 0.4 – Cloud Deployment
+Version 0.4 – Cloud Deployment
+
 - Added PostgreSQL database support
 - Added environment-based database configuration
 - Added Gunicorn production server
@@ -34,10 +40,23 @@
 - Connected cloud PostgreSQL database
 - Verified live application and data persistence
 
-## Version 0.5 – Final Review
+Version 0.5 – Final Review
+
 - Completed resident complaint workflow
 - Completed visitor management workflow
 - Completed maintenance management workflow
 - Completed admin management workflows
 - Updated project README
 - Verified live application functionality
+
+Version 0.6 – Review III Finalization
+
+- Added AI-assisted complaint analysis
+- Added complaint priority identification
+- Added priority alerts for important complaints
+- Integrated AI-assisted analysis into the admin complaint workflow
+- Updated the software architecture diagram
+- Added the Entity Relationship (ER) diagram
+- Updated README documentation to Version 3
+- Verified AI features in the deployed Render application
+- Updated project documentation for Review III
