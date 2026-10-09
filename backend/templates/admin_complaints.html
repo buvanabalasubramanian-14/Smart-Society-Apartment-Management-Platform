@@ -2,19 +2,14 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Complaints | Smart Society</title>
 
     <link rel="stylesheet"
           href="{{ url_for('static', filename='style.css') }}">
 
     <style>
-
         .status-form {
             margin-top: 15px;
             display: flex;
@@ -61,7 +56,8 @@
         }
 
         .ai-row {
-            margin: 6px 0;
+            margin: 8px 0;
+            line-height: 1.5;
         }
 
         .risk-high {
@@ -79,75 +75,72 @@
             font-weight: 700;
         }
 
-    </style>
+        .maintenance-box {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 10px;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+        }
 
+        .maintenance-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #065f46;
+        }
+
+        .priority-critical {
+            color: #dc2626;
+            font-weight: 700;
+        }
+
+        .priority-high {
+            color: #ea580c;
+            font-weight: 700;
+        }
+
+        .priority-medium {
+            color: #b45309;
+            font-weight: 700;
+        }
+
+        .priority-low {
+            color: #15803d;
+            font-weight: 700;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="dashboard-page">
-
     <main class="dashboard-main">
 
         <header class="topbar">
-
             <div>
-
                 <span>ADMIN PANEL</span>
-
-                <h1>
-                    Complaints 📝
-                </h1>
-
+                <h1>Complaints 📝</h1>
             </div>
-
-            <div class="user-badge">
-                🛡️
-            </div>
-
+            <div class="user-badge">🛡️</div>
         </header>
 
-
         <section class="welcome-card">
-
             <div>
-
-                <small>
-                    COMPLAINT MANAGEMENT
-                </small>
-
-                <h2>
-                    Resident Complaints
-                </h2>
-
+                <small>COMPLAINT MANAGEMENT</small>
+                <h2>Resident Complaints</h2>
                 <p>
                     View and manage complaints submitted
                     by society residents.
                 </p>
-
             </div>
-
-            <div class="welcome-icon">
-                📝
-            </div>
-
+            <div class="welcome-icon">📝</div>
         </section>
 
-
         <section>
-
             <div class="section-heading">
-
-                <small>
-                    ALL COMPLAINTS
-                </small>
-
-                <h2>
-                    Complaint List
-                </h2>
-
+                <small>ALL COMPLAINTS</small>
+                <h2>Complaint List</h2>
             </div>
-
 
             {% if complaints %}
 
@@ -157,53 +150,27 @@
 
                         <div class="module-card">
 
-                            <div class="module-icon">
-                                📝
-                            </div>
-
+                            <div class="module-icon">📝</div>
 
                             <div>
+                                <h3>{{ complaint.title }}</h3>
 
-                                <h3>
-                                    {{ complaint.title }}
-                                </h3>
-
+                                <p>{{ complaint.description }}</p>
 
                                 <p>
-                                    {{ complaint.description }}
-                                </p>
-
-
-                                <p>
-                                    <strong>
-                                        Complaint ID:
-                                    </strong>
-
+                                    <strong>Complaint ID:</strong>
                                     {{ complaint.id }}
                                 </p>
 
-
                                 <p>
-                                    <strong>
-                                        Resident ID:
-                                    </strong>
-
+                                    <strong>Resident ID:</strong>
                                     {{ complaint.resident_id }}
                                 </p>
 
-
                                 <p class="complaint-status">
-
-                                    <strong>
-                                        Current Status:
-                                    </strong>
-
+                                    <strong>Current Status:</strong>
                                     {{ complaint.status }}
-
                                 </p>
-
-
-                                <!-- AI ANALYSIS -->
 
                                 {% if ai_results and complaint.id in ai_results %}
 
@@ -216,73 +183,88 @@
                                         </div>
 
                                         <div class="ai-row">
-
-                                            <strong>
-                                                Category:
-                                            </strong>
-
+                                            <strong>Category:</strong>
                                             {{ ai.category }}
-
                                         </div>
 
                                         <div class="ai-row">
-
-                                            <strong>
-                                                Risk Level:
-                                            </strong>
+                                            <strong>Risk Level:</strong>
 
                                             {% if ai.risk == "Critical" %}
-
                                                 <span class="risk-high">
                                                     🔴 {{ ai.risk }}
                                                 </span>
-
                                             {% elif ai.risk == "High" %}
-
                                                 <span class="risk-high">
                                                     🟠 {{ ai.risk }}
                                                 </span>
-
                                             {% elif ai.risk == "Medium" %}
-
                                                 <span class="risk-medium">
                                                     🟡 {{ ai.risk }}
                                                 </span>
-
                                             {% else %}
-
                                                 <span class="risk-low">
                                                     🟢 {{ ai.risk }}
                                                 </span>
-
                                             {% endif %}
-
                                         </div>
 
                                         <div class="ai-row">
-
-                                            <strong>
-                                                AI Risk Score:
-                                            </strong>
-
+                                            <strong>AI Risk Score:</strong>
                                             {{ ai.risk_score }}%
-
                                         </div>
 
                                         <div class="ai-row">
-
-                                            <strong>
-                                                Recommendation:
-                                            </strong>
-
+                                            <strong>Recommendation:</strong>
                                             {{ ai.recommendation }}
-
                                         </div>
 
+                                        <div class="maintenance-box">
+
+                                            <div class="maintenance-title">
+                                                🛠️ AI Predictive Maintenance
+                                            </div>
+
+                                            <div class="ai-row">
+                                                <strong>Maintenance Priority:</strong>
+
+                                                {% if ai.maintenance_priority is defined %}
+                                                    {% if "P1" in ai.maintenance_priority %}
+                                                        <span class="priority-critical">
+                                                            {{ ai.maintenance_priority }}
+                                                        </span>
+                                                    {% elif "P2" in ai.maintenance_priority %}
+                                                        <span class="priority-high">
+                                                            {{ ai.maintenance_priority }}
+                                                        </span>
+                                                    {% elif "P3" in ai.maintenance_priority %}
+                                                        <span class="priority-medium">
+                                                            {{ ai.maintenance_priority }}
+                                                        </span>
+                                                    {% else %}
+                                                        <span class="priority-low">
+                                                            {{ ai.maintenance_priority }}
+                                                        </span>
+                                                    {% endif %}
+                                                {% else %}
+                                                    Not available
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="ai-row">
+                                                <strong>Urgency:</strong>
+                                                {{ ai.maintenance_urgency | default("Review required") }}
+                                            </div>
+
+                                            <div class="ai-row">
+                                                <strong>Suggested Action:</strong>
+                                                {{ ai.maintenance_action | default(ai.recommendation) }}
+                                            </div>
+
+                                        </div>
                                     </div>
 
                                 {% endif %}
-
 
                                 <form
                                     method="POST"
@@ -293,7 +275,14 @@
                                         Update:
                                     </label>
 
-                                    <select name="status">
+                                    <select name="status" required>
+
+                                        <option value="Submitted"
+                                            {% if complaint.status == "Submitted" %}
+                                                selected
+                                            {% endif %}>
+                                            Submitted
+                                        </option>
 
                                         <option value="Pending"
                                             {% if complaint.status == "Pending" %}
@@ -311,12 +300,10 @@
 
                                     </select>
 
-
                                     <input
                                         type="hidden"
                                         name="id"
                                         value="{{ complaint.id }}">
-
 
                                     <button type="submit">
                                         Update
@@ -325,7 +312,6 @@
                                 </form>
 
                             </div>
-
                         </div>
 
                     {% endfor %}
@@ -335,38 +321,26 @@
             {% else %}
 
                 <div class="welcome-card">
-
                     <div>
-
-                        <h2>
-                            No Complaints Yet
-                        </h2>
-
+                        <h2>No Complaints Yet</h2>
                         <p>
                             Residents have not submitted
                             any complaints.
                         </p>
-
                     </div>
-
                 </div>
 
             {% endif %}
-
         </section>
 
-
         <br>
-
 
         <a href="/admin/dashboard">
             ← Back to Admin Dashboard
         </a>
 
     </main>
-
 </div>
 
 </body>
-
 </html>
