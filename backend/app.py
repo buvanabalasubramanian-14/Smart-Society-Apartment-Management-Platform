@@ -5,21 +5,28 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from ai_engine import analyze_complaint
 
 app = Flask(__name__)
-app.secret_key = "smart"
+app.secret_key = os.environ.get("SECRET_KEY", "smart")
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
 DATABASE_URL = os.environ.get("DATABASE_URL")
+
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace(
+        "postgres://", "postgresql+psycopg2://", 1
+    )
+elif DATABASE_URL and DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = DATABASE_URL.replace(
+        "postgresql://", "postgresql+psycopg2://", 1
+    )
 
 if DATABASE_URL:
     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 else:
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(
-        BASE_DIR,
-        "instance",
-        "smart_society.db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        "sqlite:///" + os.path.join(BASE_DIR, "instance", "smart_society.db")
     )
 
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 
 
@@ -78,27 +85,22 @@ def home():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-
     if request.method == "POST":
-
-        email = request.form["email"].lower()
+        email = request.form["email"].strip().lower()
 
         if Resident.query.filter_by(email=email).first():
             return "Email already registered. Please login."
 
         resident = Resident(
-            name=request.form["name"],
-            flat_no=request.form["flat_no"],
-            phone=request.form["phone"],
+            name=request.form["name"].strip(),
+            flat_no=request.form["flat_no"].strip(),
+            phone=request.form["phone"].strip(),
             email=email,
-            password=generate_password_hash(
-                request.form["password"]
-            )
+            password=generate_password_hash(request.form["password"])
         )
 
         db.session.add(resident)
         db.session.commit()
-
         return redirect("/login")
 
     return render_template("register.html")
@@ -106,24 +108,18 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-
     if request.method == "POST":
-
         resident = Resident.query.filter_by(
-            email=request.form["email"].lower()
+            email=request.form["email"].strip().lower()
         ).first()
 
         if resident and check_password_hash(
-            resident.password,
-            request.form["password"]
+            resident.password, request.form["password"]
         ):
-
             session.clear()
-
             session["type"] = "resident"
             session["id"] = resident.id
             session["resident_name"] = resident.name
-
             return redirect("/dashboard")
 
     return render_template("login.html")
@@ -131,79 +127,67 @@ def login():
 
 @app.route("/dashboard")
 def dashboard():
-
     if session.get("type") != "resident":
         return redirect("/login")
-
     return render_template("dashboard.html")
 
 
 @app.route("/complaints", methods=["GET", "POST"])
 def complaints():
-
     if session.get("type") != "resident":
         return redirect("/login")
 
     if request.method == "POST":
-
         complaint = Complaint(
             resident_id=session["id"],
-            title=request.form["title"],
-            description=request.form["description"]
+            title=request.form["title"].strip(),
+            description=request.form["description"].strip()
         )
-
         db.session.add(complaint)
         db.session.commit()
+        return redirect("/complaints")
 
-    complaints = Complaint.query.filter_by(
+    resident_complaints = Complaint.query.filter_by(
         resident_id=session["id"]
     ).all()
 
     return render_template(
-        "complaints.html",
-        complaints=complaints
+        "complaints.html", complaints=resident_complaints
     )
 
 
 @app.route("/visitors", methods=["GET", "POST"])
 def visitors():
-
     if session.get("type") != "resident":
         return redirect("/login")
 
     if request.method == "POST":
-
         visitor = Visitor(
             resident_id=session["id"],
-            visitor_name=request.form["visitor_name"],
-            phone=request.form["phone"],
+            visitor_name=request.form["visitor_name"].strip(),
+            phone=request.form["phone"].strip(),
             visit_date=request.form["visit_date"],
-            purpose=request.form["purpose"]
+            purpose=request.form["purpose"].strip()
         )
-
         db.session.add(visitor)
         db.session.commit()
+        return redirect("/visitors")
 
-    visitors = Visitor.query.filter_by(
+    resident_visitors = Visitor.query.filter_by(
         resident_id=session["id"]
     ).all()
 
-    return render_template(
-        "visitors.html",
-        visitors=visitors
-    )
+    return render_template("visitors.html", visitors=resident_visitors)
 
 
 @app.route("/visitors/delete/<int:id>", methods=["POST"])
 def delete_visitor(id):
-
     if session.get("type") != "resident":
         return redirect("/login")
 
     visitor = Visitor.query.get_or_404(id)
 
     if visitor.resident_id == session["id"]:
-
         db.session.delete(visitor)
         db.session.commit()
 
@@ -212,41 +196,36 @@ def delete_visitor(id):
 
 @app.route("/maintenance", methods=["GET", "POST"])
 def maintenance():
-
     if session.get("type") != "resident":
         return redirect("/login")
 
     if request.method == "POST":
-
         maintenance_request = Maintenance(
             resident_id=session["id"],
-            title=request.form["title"],
-            description=request.form["description"]
+            title=request.form["title"].strip(),
+            description=request.form["description"].strip()
         )
-
         db.session.add(maintenance_request)
         db.session.commit()
+        return redirect("/maintenance")
 
-    requests = Maintenance.query.filter_by(
+    maintenance_requests = Maintenance.query.filter_by(
         resident_id=session["id"]
     ).all()
 
     return render_template(
-        "maintenance.html",
-        requests=requests
+        "maintenance.html", requests=maintenance_requests
     )
 
 
 @app.route("/maintenance/delete/<int:id>", methods=["POST"])
 def delete_maintenance(id):
-
     if session.get("type") != "resident":
         return redirect("/login")
 
     maintenance_request = Maintenance.query.get_or_404(id)
 
     if maintenance_request.resident_id == session["id"]:
-
         db.session.delete(maintenance_request)
         db.session.commit()
 
@@ -255,35 +234,25 @@ def delete_maintenance(id):
 
 @app.route("/profile")
 def profile():
-
     if session.get("type") != "resident":
         return redirect("/login")
 
-    resident = Resident.query.get(session["id"])
-
-    return render_template(
-        "profile.html",
-        resident=resident
-    )
+    resident = Resident.query.get_or_404(session["id"])
+    return render_template("profile.html", resident=resident)
 
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
-
     if request.method == "POST":
-
         admin = Admin.query.filter_by(
-            email=request.form["email"].lower()
+            email=request.form["email"].strip().lower()
         ).first()
 
         if admin and check_password_hash(
-            admin.password,
-            request.form["password"]
+            admin.password, request.form["password"]
         ):
-
             session.clear()
             session["type"] = "admin"
-
             return redirect("/admin/dashboard")
 
     return render_template("admin_login.html")
@@ -291,82 +260,45 @@ def admin_login():
 
 @app.route("/admin/dashboard")
 def admin_dashboard():
-
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
     total_residents = Resident.query.count()
-
     total_complaints = Complaint.query.count()
+    pending = Complaint.query.filter_by(status="Pending").count()
+    resolved = Complaint.query.filter_by(status="Resolved").count()
 
-    pending = Complaint.query.filter_by(
-        status="Pending"
-    ).count()
-
-    resolved = Complaint.query.filter_by(
-        status="Resolved"
-    ).count()
-
-    complaints = Complaint.query.all()
-
-    critical = 0
-    high = 0
-    medium = 0
-    low = 0
-
+    complaints_list = Complaint.query.all()
+    risk_counts = {"Critical": 0, "High": 0, "Medium": 0, "Low": 0}
     categories = {}
-
     priority_complaints = []
 
-    for complaint in complaints:
-
-        text = complaint.title + " " + complaint.description
-
+    for complaint in complaints_list:
+        text = f"{complaint.title} {complaint.description}"
         ai = analyze_complaint(text)
-
         risk = ai["risk"]
         category = ai["category"]
 
-        if risk == "Critical":
-            critical += 1
+        if risk in risk_counts:
+            risk_counts[risk] += 1
 
-        elif risk == "High":
-            high += 1
-
-        elif risk == "Medium":
-            medium += 1
-
-        elif risk == "Low":
-            low += 1
-
-        categories[category] = categories.get(
-            category,
-            0
-        ) + 1
+        categories[category] = categories.get(category, 0) + 1
 
         if complaint.status != "Resolved":
-
             priority_complaints.append({
                 "title": complaint.title,
-                "risk": ai["risk"],
+                "risk": risk,
                 "risk_score": ai["risk_score"],
-                "category": ai["category"],
+                "category": category,
                 "recommendation": ai["recommendation"]
             })
 
     priority_complaints.sort(
-        key=lambda x: x["risk_score"],
-        reverse=True
+        key=lambda item: item["risk_score"], reverse=True
     )
-
-    most_common_category = "No Data"
-
-    if categories:
-
-        most_common_category = max(
-            categories,
-            key=categories.get
-        )
+    most_common_category = (
+        max(categories, key=categories.get) if categories else "No Data"
+    )
 
     return render_template(
         "admin_dashboard.html",
@@ -374,165 +306,118 @@ def admin_dashboard():
         total_complaints=total_complaints,
         pending=pending,
         resolved=resolved,
-        critical=critical,
-        high=high,
-        medium=medium,
-        low=low,
+        critical=risk_counts["Critical"],
+        high=risk_counts["High"],
+        medium=risk_counts["Medium"],
+        low=risk_counts["Low"],
         most_common_category=most_common_category,
         priority_complaints=priority_complaints[:3]
     )
 
 
-@app.route(
-    "/admin/complaints",
-    methods=["GET", "POST"]
-)
+@app.route("/admin/complaints", methods=["GET", "POST"])
 def admin_complaints():
-
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
     if request.method == "POST":
-
-        complaint = Complaint.query.get(
-            request.form["id"]
-        )
+        complaint = Complaint.query.get(request.form["id"])
 
         if complaint:
+            status = request.form["status"]
+            if status in ["Submitted", "Pending", "Resolved"]:
+                complaint.status = status
+                db.session.commit()
 
-            complaint.status = request.form["status"]
+        return redirect("/admin/complaints")
 
-            db.session.commit()
-
-    complaints = Complaint.query.all()
-
+    complaints_list = Complaint.query.all()
     ai_results = {}
 
-    for complaint in complaints:
-
-        text = complaint.title + " " + complaint.description
-
+    for complaint in complaints_list:
+        text = f"{complaint.title} {complaint.description}"
         ai_results[complaint.id] = analyze_complaint(text)
 
     return render_template(
         "admin_complaints.html",
-        complaints=complaints,
+        complaints=complaints_list,
         ai_results=ai_results
     )
 
 
 @app.route("/admin/complaints/<status>")
 def complaint_status(status):
-
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
-    if status not in ["Pending", "Resolved"]:
+    if status not in ["Submitted", "Pending", "Resolved"]:
         return redirect("/admin/complaints")
 
-    complaints = Complaint.query.filter_by(
-        status=status
-    ).all()
-
+    complaints_list = Complaint.query.filter_by(status=status).all()
     ai_results = {}
 
-    for complaint in complaints:
-
-        text = complaint.title + " " + complaint.description
-
+    for complaint in complaints_list:
+        text = f"{complaint.title} {complaint.description}"
         ai_results[complaint.id] = analyze_complaint(text)
 
     return render_template(
         "admin_complaints.html",
-        complaints=complaints,
+        complaints=complaints_list,
         ai_results=ai_results
     )
 
 
 @app.route("/admin/residents")
 def admin_residents():
-
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
     residents = Resident.query.all()
-
-    return render_template(
-        "admin_residents.html",
-        residents=residents
-    )
+    return render_template("admin_residents.html", residents=residents)
 
 
-@app.route(
-    "/admin/resident/delete/<int:id>",
-    methods=["POST"]
-)
+@app.route("/admin/resident/delete/<int:id>", methods=["POST"])
 def delete_resident(id):
-
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
     resident = Resident.query.get_or_404(id)
-
     db.session.delete(resident)
     db.session.commit()
-
     return redirect("/admin/residents")
 
 
 @app.route("/admin/visitors")
 def admin_visitors():
-
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
-    visitors = Visitor.query.all()
-
-    return render_template(
-        "admin_visitors.html",
-        visitors=visitors
-    )
+    visitors_list = Visitor.query.all()
+    return render_template("admin_visitors.html", visitors=visitors_list)
 
 
 @app.route("/admin/maintenance")
 def admin_maintenance():
-
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
-    requests = Maintenance.query.all()
-
+    maintenance_requests = Maintenance.query.all()
     return render_template(
-        "admin_maintenance.html",
-        requests=requests
+        "admin_maintenance.html", requests=maintenance_requests
     )
 
 
-@app.route(
-    "/admin/maintenance/update",
-    methods=["POST"]
-)
+@app.route("/admin/maintenance/update", methods=["POST"])
 def update_maintenance():
-
     if session.get("type") != "admin":
         return redirect("/admin/login")
 
     request_id = request.form["id"]
-
     new_status = request.form["status"]
+    maintenance_request = Maintenance.query.get_or_404(request_id)
 
-    maintenance_request = Maintenance.query.get_or_404(
-        request_id
-    )
-
-    if new_status in [
-        "Pending",
-        "In Progress",
-        "Resolved"
-    ]:
-
+    if new_status in ["Pending", "In Progress", "Resolved"]:
         maintenance_request.status = new_status
-
         db.session.commit()
 
     return redirect("/admin/maintenance")
@@ -540,32 +425,24 @@ def update_maintenance():
 
 @app.route("/logout")
 def logout():
-
     session.clear()
-
     return redirect("/")
 
 
 with app.app_context():
-
-    os.makedirs(
-        os.path.join(BASE_DIR, "instance"),
-        exist_ok=True
-    )
-
+    os.makedirs(os.path.join(BASE_DIR, "instance"), exist_ok=True)
     db.create_all()
 
-    if not Admin.query.filter_by(
-        email="admin@smartsociety.com"
-    ).first():
+    admin_email = os.environ.get(
+        "ADMIN_EMAIL", "admin@smartsociety.com"
+    )
+    admin_password = os.environ.get("ADMIN_PASSWORD", "admin123")
 
+    if not Admin.query.filter_by(email=admin_email).first():
         admin = Admin(
-            email="admin@smartsociety.com",
-            password=generate_password_hash(
-                "admin123"
-            )
+            email=admin_email,
+            password=generate_password_hash(admin_password)
         )
-
         db.session.add(admin)
         db.session.commit()
 
